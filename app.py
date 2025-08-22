@@ -11,6 +11,18 @@ from langchain_chroma.vectorstores import Chroma as ChromaStore
 st.set_page_config(page_title="Chat with your PDF", layout="wide")
 st.title("📄💬 Chat with your PDF (Local RAG + Ollama)")
 
+# Add MCP status indicator
+st.sidebar.header("🔗 MCP Server Status")
+if os.path.exists("./db"):
+    st.sidebar.success("✅ Vector DB available for MCP clients")
+    st.sidebar.info("VS Code can now access this RAG via MCP!")
+else:
+    st.sidebar.warning("⚠️ No vector DB found")
+
+st.sidebar.markdown("---")
+st.sidebar.markdown("**MCP Server Setup:**")
+st.sidebar.code("python mcp_server.py", language="bash")
+
 # Initialize session state for memory
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
@@ -56,6 +68,7 @@ if uploaded_file:
         )
 
         st.success("PDF processed. Start chatting below!")
+        st.success("🎉 RAG is now available to MCP clients (VS Code, Claude, etc.)")
 
 # Chat interface
 if st.session_state.qa_chain:
@@ -75,4 +88,4 @@ for role, msg in st.session_state.chat_history:
 # Clear chat history
 if st.button("🧹 Clear chat"):
     st.session_state.chat_history = []
-    st.experimental_rerun()
+    st.rerun()

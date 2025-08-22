@@ -6,9 +6,10 @@ A local RAG (Retrieval-Augmented Generation) application that allows you to chat
 
 - **Upload and chat with PDF documents**
 - **Local processing** - No data sent to external APIs
-- **Two interfaces**: Streamlit web UI and terminal-based chat
+- **Three interfaces**: Streamlit web UI, terminal-based chat, and **MCP tools for Claude**
 - **Conversation memory** - Maintains context across questions
 - **Vector storage** with ChromaDB for efficient document retrieval
+- **MCP Server** - Use as tools in Claude Desktop via Model Context Protocol
 
 ## 🛠️ Tech Stack
 
@@ -17,6 +18,7 @@ A local RAG (Retrieval-Augmented Generation) application that allows you to chat
 - **ChromaDB** - Vector database for embeddings
 - **Streamlit** - Web interface
 - **PyPDF** - PDF processing
+- **MCP (Model Context Protocol)** - Integration with Claude Desktop
 
 ## 📋 Prerequisites
 
@@ -70,6 +72,44 @@ streamlit run app.py
    python chat_with_pdf.py
    ```
 
+### 🔧 MCP Tools for Claude Desktop
+
+You can now use this RAG system as MCP tools in Claude Desktop! This allows you to process PDFs and query them directly through Claude's interface.
+
+#### Setup MCP Configuration
+
+1. **Locate Claude Desktop config file**:
+   - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+   - **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+
+2. **Add the MCP server configuration**:
+   ```json
+   {
+     "mcpServers": {
+       "rag-pdf-server": {
+         "command": "python",
+         "args": ["mcp_server.py"],
+         "cwd": "c:\\Users\\THINK\\Desktop\\rag"
+       }
+     }
+   }
+   ```
+
+3. **Restart Claude Desktop** to load the MCP tools
+
+#### Available MCP Tools
+
+- **`process_pdf`** - Upload and process a PDF document into the vector database
+- **`query_pdf`** - Ask questions about processed PDFs
+- **`list_documents`** - View all processed documents
+
+#### Using MCP Tools in Claude
+
+Once configured, you can use natural language in Claude Desktop:
+- "Process this PDF file for me: /path/to/document.pdf"
+- "What does the document say about [topic]?"
+- "Show me all the documents I've processed"
+
 ##  Project Structure
 
 ```
@@ -77,6 +117,8 @@ pdf-chat-rag/
 ├── app.py                 # Streamlit web interface
 ├── rag_pdf_chat.py       # PDF processing script
 ├── chat_with_pdf.py      # Terminal chat interface
+├── mcp_server.py         # MCP server for Claude integration
+├── mcp_config.json       # Example MCP configuration
 ├── requirements.txt      # Python dependencies
 ├── db/                   # ChromaDB vector storage
 └── README.md            # This file
@@ -106,6 +148,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [LangChain](https://langchain.com/) for the RAG framework
 - [Ollama](https://ollama.ai/) for local LLM inference
 - [ChromaDB](https://www.trychroma.com/) for vector storage
+- [Model Context Protocol](https://modelcontextprotocol.io/) for Claude integration
 
 ---
 **Made by [Hamza Uzair](https://github.com/HamzaUzair05)**
